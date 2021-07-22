@@ -6,8 +6,8 @@ body {
 }
 
 input {
-    width: 100%;
-    padding: 10px;
+    width: 80%;
+    padding: 5px;
     box-sizing: border-box;
     border: 1px solid #5f9341;
     margin-bottom: 4px;
@@ -16,9 +16,17 @@ input {
 button {
     background: #5f9341;
     color: white;
-    padding: 10px 20px;
-    border: none;
+    padding: 5px 10px;
+    border: 1px solid #5f9341;
     font-weight: bold;
+    
+}
+
+#save-btn, #sall-btn {
+    background:white;
+    color: #5f9341;
+    border: 1px solid #5f9341;
+    padding: 5px 10px;
 }
 
 ul {
