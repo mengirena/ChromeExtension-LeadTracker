@@ -1,10 +1,10 @@
 let myTabs = [{
     url:"www.google.com",
-    category:"search",
+    category:"Research",
     saved:new Date()
 },{
     url:"www.A.com",
-    category:"search",
+    category:"Research",
     saved:new Date()
 },{
     url:"www.B.com",
@@ -15,15 +15,17 @@ let myTabs = [{
     category:"CSS",
     saved:new Date()
 }]
-let category = []
+
+let category = ["Search","CSS"]
 const inputEl = document.getElementById("input-el")
-const inputBtn = document.getElementById("input-btn")
+const createBtn = document.getElementById("input-btn")
 const ulEl = document.getElementById("ul-el")
 
-inputBtn.addEventListener("click", function() {
-    myTabs.push(inputEl.value)
-    inputEl.value = ""
-    renderLeads()
+/*
+ 
+*/
+createBtn.addEventListener("click", function() {
+
 })
 
 function render() {
