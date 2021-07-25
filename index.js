@@ -1,45 +1,58 @@
-let myTabs = [{
-    url:"www.google.com",
-    category:"Research",
-    saved:new Date()
-},{
-    url:"www.A.com",
-    category:"Research",
-    saved:new Date()
-},{
-    url:"www.B.com",
-    category:"CSS",
-    saved:new Date()
-},{
-    url:"www.C.com",
-    category:"CSS",
-    saved:new Date()
-}]
+let myTabs = {
+    Search:[{
+        url:"www.google.com",
+        saved:new Date()
+    },{
+        url:"www.A.com",
+        saved:new Date()
+    }],
+    CSS:[{
+        url:"www.B.com",
+        saved:new Date()
+    },{
+        url:"www.C.com",
+        saved:new Date()
+    }]
+}
 
-let category = ["Search","CSS"]
 const inputEl = document.getElementById("input-el")
 const createBtn = document.getElementById("input-btn")
-const ulEl = document.getElementById("ul-el")
+const catEl = document.getElementById("cat-el")
 
 /*
- 
+ 1. render category blocks and the url
+ 2.  
 */
 createBtn.addEventListener("click", function() {
-
+    console.log(inputEl.value)
+    
+    //catEl.innerHTML = renderList(myTabs.CSS)
 })
 
-function render() {
-    let listItems = ""
-    for (let i = 0; i < myTabs.length; i++) {
+function renderList(lists){
+    console.log(lists)
+    let listItems = "<ul>"
+    for (let i = 0; i < lists.length; i++) {
         listItems += `
-            <li>
-                <a target='_blank' href='${myTabs[i]}'>
-                    ${myTabs[i]}
+            <li draggable="true">
+                <a target='_blank' href='${lists[i].url}'>
+                    ${lists[i].url}
                 </a>
+                <span>${lists[i].saved.getMonth()+1}/${lists[i].saved.getDate()}</span>
             </li>
         `
     }
-    ulEl.innerHTML = listItems  
+    return listItems + '</ul>'
+}
+
+function renderCat(myTabs) {
+    let categoryItems = ""
+    for (let i = 0; i < myTabs.length; i++){
+        categoryItems += `
+            <div class ='category' draggable="true">
+            </div>
+        `
+    }
 }
 
 // chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
