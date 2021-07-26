@@ -15,22 +15,55 @@ let myTabs = {
     }]
 }
 
+
 const inputEl = document.getElementById("input-el")
 const createBtn = document.getElementById("input-btn")
+const saveBtn = document.getElementById("save-btn")
 const catEl = document.getElementById("cat-el")
+catEl.innerHTML = renderCat(myTabs)
 
-/*
- 1. render category blocks and the url
- 2.  
-*/
+function handleDelete(e){
+    let parent = document.querySelector(`div[id=${e.id}]`)
+    console.log(parent)
+    console.log(parent.innerText.split("\n"))
+    let key = parent.innerText.split("\n")[0]
+    delete myTabs[key]
+    console.log(myTabs)
+    parent.remove()
+}
+
 createBtn.addEventListener("click", function() {
-    console.log(inputEl.value)
-    
-    //catEl.innerHTML = renderList(myTabs.CSS)
+    if (inputEl.value != "") myTabs[inputEl.value] = []
+    catEl.innerHTML = renderCat(myTabs)
 })
 
+
+saveBtn.addEventListener("click", function(){
+    console.log("dd")
+    console.log(chrome.tabs)
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+        let newObj = {
+            "url": null,
+            "saved": null
+        }
+        let key = "undefined"
+        newObj["url"] = tabs[0].url
+        newObj["saved"] = new Date()
+        if (inputEl.value != "") {
+            key = inputEl.value
+        }
+        if (!(key in myTabs)) myTabs[key] = []
+
+        myTabs[key].push(newObj)
+
+        catEl.innerHTML = myTabs
+        catEl.innerHTML = renderCat(myTabs)
+    })
+})
+
+
+
 function renderList(lists){
-    console.log(lists)
     let listItems = "<ul>"
     for (let i = 0; i < lists.length; i++) {
         listItems += `
@@ -47,16 +80,15 @@ function renderList(lists){
 
 function renderCat(myTabs) {
     let categoryItems = ""
-    for (let i = 0; i < myTabs.length; i++){
+    for (let key in myTabs){
         categoryItems += `
-            <div class ='category' draggable="true">
+            <div id="${key}" class ='category' draggable="true">
+                <p>${key}</p>
+                <button class="delete-btn" onclick="handleDelete(this)" id="${key}">X</button>
+                ${renderList(myTabs[key])}
             </div>
         `
     }
+    return categoryItems
 }
 
-// chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-//     myLeads.push(tabs[0].url)
-//     localStorage.setItem("myLeads", JSON.stringify(myLeads) )
-//     render(myLeads)
-// })
