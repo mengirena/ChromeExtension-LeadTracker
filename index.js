@@ -15,63 +15,58 @@ let myTabs = {
     }]
 }
 
-
 const inputEl = document.getElementById("input-el")
 const createBtn = document.getElementById("input-btn")
 const saveBtn = document.getElementById("save-btn")
 const catEl = document.getElementById("cat-el")
 catEl.innerHTML = renderCat(myTabs)
 
-function handleDelete(e){
-    let parent = document.querySelector(`div[id=${e.id}]`)
-    console.log(parent)
-    console.log(parent.innerText.split("\n"))
-    let key = parent.innerText.split("\n")[0]
-    delete myTabs[key]
-    console.log(myTabs)
-    parent.remove()
-}
-
 createBtn.addEventListener("click", function() {
     if (inputEl.value != "") myTabs[inputEl.value] = []
     catEl.innerHTML = renderCat(myTabs)
 })
 
-
 saveBtn.addEventListener("click", function(){
-    console.log("dd")
-    console.log(chrome.tabs)
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
         let newObj = {
             "url": null,
-            "saved": null
+            "read": false
         }
         let key = "undefined"
         newObj["url"] = tabs[0].url
         newObj["saved"] = new Date()
-        if (inputEl.value != "") {
-            key = inputEl.value
-        }
+
+        if (inputEl.value != "") key = inputEl.value
         if (!(key in myTabs)) myTabs[key] = []
 
         myTabs[key].push(newObj)
-
         catEl.innerHTML = myTabs
         catEl.innerHTML = renderCat(myTabs)
     })
 })
 
+function handleDelete(e){
+    let parent = document.querySelector(`div[id=${e.id}]`)
+    let key = parent.innerText.split("\n")[0]
+    delete myTabs[key]
+    parent.remove()
+}
 
+function strikedThough(e){
+    let key = e.id.split("-")
+    myTabs[key[0]].splice(key[1],1)
+    e.remove()
+}
 
-function renderList(lists){
+function renderList(lists, key){
     let listItems = "<ul>"
     for (let i = 0; i < lists.length; i++) {
         listItems += `
-            <li draggable="true">
+            <li id="${key}-${i}" ondblclick="strikedThough(this)" draggable="true">
                 <a target='_blank' href='${lists[i].url}'>
                     ${lists[i].url}
                 </a>
-                <span>${lists[i].saved.getMonth()+1}/${lists[i].saved.getDate()}</span>
+                <span >${lists[i].saved.getMonth()+1}/${lists[i].saved.getDate()}</span>
             </li>
         `
     }
@@ -85,7 +80,7 @@ function renderCat(myTabs) {
             <div id="${key}" class ='category' draggable="true">
                 <p>${key}</p>
                 <button class="delete-btn" onclick="handleDelete(this)" id="${key}">X</button>
-                ${renderList(myTabs[key])}
+                ${renderList(myTabs[key],key)}
             </div>
         `
     }
