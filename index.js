@@ -1,3 +1,23 @@
+/*
+functions:
+1. Create categories
+2. Save active websites with or without the category name
+3. Save all websites
+4. Delete category block
+5. Delete website list
+6. Drag website list to different category block 
+
+Flow:
+If the localStorage has data, render it
+
+Render Category blocks
+        
+Render URL lists
+
+
+
+*/ 
+
 let myTabs = {
     Search:[{
         url:"www.google.com",
@@ -19,11 +39,13 @@ const inputEl = document.getElementById("input-el")
 const createBtn = document.getElementById("input-btn")
 const saveBtn = document.getElementById("save-btn")
 const catEl = document.getElementById("cat-el")
-catEl.innerHTML = renderCat(myTabs)
+let deleteBtn
+
+renderCat(myTabs)
 
 createBtn.addEventListener("click", function() {
     if (inputEl.value != "") myTabs[inputEl.value] = []
-    catEl.innerHTML = renderCat(myTabs)
+    renderCat(myTabs)
 })
 
 saveBtn.addEventListener("click", function(){
@@ -40,8 +62,7 @@ saveBtn.addEventListener("click", function(){
         if (!(key in myTabs)) myTabs[key] = []
 
         myTabs[key].push(newObj)
-        catEl.innerHTML = myTabs
-        catEl.innerHTML = renderCat(myTabs)
+        renderCat(myTabs)
     })
 })
 
@@ -58,11 +79,18 @@ function strikedThough(e){
     e.remove()
 }
 
+function addDeleteBtnSmurf(){
+    deleteBtn = document.querySelectorAll('.delete-btn')
+    deleteBtn.forEach(btn => {
+
+    })
+}
+
 function renderList(lists, key){
     let listItems = "<ul>"
     for (let i = 0; i < lists.length; i++) {
         listItems += `
-            <li id="${key}-${i}" ondblclick="strikedThough(this)" draggable="true">
+            <li id="${key}-${i}" draggable="true">
                 <a target='_blank' href='${lists[i].url}'>
                     ${lists[i].url}
                 </a>
@@ -84,6 +112,6 @@ function renderCat(myTabs) {
             </div>
         `
     }
-    return categoryItems
+    catEl.innerHTML = categoryItems
 }
 
