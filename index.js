@@ -19,20 +19,20 @@ Render URL lists
 */ 
 
 let myTabs = {
-    Search:[{
-        url:"www.google.com",
-        saved:new Date()
-    },{
-        url:"www.A.com",
-        saved:new Date()
-    }],
-    CSS:[{
-        url:"www.B.com",
-        saved:new Date()
-    },{
-        url:"www.C.com",
-        saved:new Date()
-    }]
+    // Search:[{
+    //     url:"www.google.com",
+    //     saved:new Date()
+    // },{
+    //     url:"www.A.com",
+    //     saved:new Date()
+    // }],
+    // CSS:[{
+    //     url:"www.B.com",
+    //     saved:new Date()
+    // },{
+    //     url:"www.C.com",
+    //     saved:new Date()
+    // }]
 }
 
 const inputEl = document.getElementById("input-el")
@@ -40,11 +40,14 @@ const createBtn = document.getElementById("input-btn")
 const saveBtn = document.getElementById("save-btn")
 const catEl = document.getElementById("cat-el")
 let deleteBtn
+console.log("from localStorage",localStorage.getItem("myTabs"))
+myTabs = JSON.parse(localStorage.getItem("myTabs")) || myTabs
 
 renderCat(myTabs)
 
 createBtn.addEventListener("click", function() {
     if (inputEl.value != "") myTabs[inputEl.value] = []
+    localStorage.setItem("myTabs",JSON.stringify(myTabs))
     renderCat(myTabs)
 })
 
@@ -52,38 +55,41 @@ saveBtn.addEventListener("click", function(){
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
         let newObj = {
             "url": null,
-            "read": false
         }
         let key = "undefined"
         newObj["url"] = tabs[0].url
         newObj["saved"] = new Date()
-
+        
         if (inputEl.value != "") key = inputEl.value
         if (!(key in myTabs)) myTabs[key] = []
-
+        
         myTabs[key].push(newObj)
+        localStorage.setItem("myTabs",JSON.stringify(myTabs))
+        console.log("save",myTabs)
         renderCat(myTabs)
     })
 })
 
-function handleDelete(e){
-    let parent = document.querySelector(`div[id=${e.id}]`)
-    let key = parent.innerText.split("\n")[0]
+function deleteCat(e){
+    let key = e.target.id
     delete myTabs[key]
-    parent.remove()
+    localStorage.setItem("myTabs",JSON.stringify(myTabs))
+    renderCat(myTabs)
 }
 
-function strikedThough(e){
-    let key = e.id.split("-")
+function deleteList(e){
+    let key = e.currentTarget.id.split("-")
     myTabs[key[0]].splice(key[1],1)
-    e.remove()
+    localStorage.setItem("myTabs",JSON.stringify(myTabs))
+    renderCat(myTabs)
+
 }
 
-function addDeleteBtnSmurf(){
-    deleteBtn = document.querySelectorAll('.delete-btn')
-    deleteBtn.forEach(btn => {
-
-    })
+function addDeleteSmurf(){
+    deleteBlock = document.querySelectorAll('.delete-btn')
+    deleteUrl = document.querySelectorAll('li')
+    deleteBlock.forEach(block => block.addEventListener("click",deleteCat))
+    deleteUrl.forEach(list => list.addEventListener("dblclick",deleteList,true))
 }
 
 function renderList(lists, key){
@@ -94,7 +100,7 @@ function renderList(lists, key){
                 <a target='_blank' href='${lists[i].url}'>
                     ${lists[i].url}
                 </a>
-                <span >${lists[i].saved.getMonth()+1}/${lists[i].saved.getDate()}</span>
+                <span>${new Date(lists[i].saved).getMonth()+1}/${new Date(lists[i].saved).getDate()}</span>
             </li>
         `
     }
@@ -104,14 +110,17 @@ function renderList(lists, key){
 function renderCat(myTabs) {
     let categoryItems = ""
     for (let key in myTabs){
+        let lists = ""
+        if (myTabs[key] !== []) lists = renderList(myTabs[key],key)
         categoryItems += `
             <div id="${key}" class ='category' draggable="true">
                 <p>${key}</p>
-                <button class="delete-btn" onclick="handleDelete(this)" id="${key}">X</button>
-                ${renderList(myTabs[key],key)}
+                <p class="delete-btn" id="${key}">X</p>
+                ${lists}
             </div>
         `
     }
     catEl.innerHTML = categoryItems
+    addDeleteSmurf()
 }
 
