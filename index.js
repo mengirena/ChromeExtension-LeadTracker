@@ -40,7 +40,6 @@ const createBtn = document.getElementById("input-btn")
 const saveBtn = document.getElementById("save-btn")
 const catEl = document.getElementById("cat-el")
 let deleteBtn
-console.log("from localStorage",localStorage.getItem("myTabs"))
 myTabs = JSON.parse(localStorage.getItem("myTabs")) || myTabs
 
 renderCat(myTabs)
@@ -65,7 +64,6 @@ saveBtn.addEventListener("click", function(){
         
         myTabs[key].push(newObj)
         localStorage.setItem("myTabs",JSON.stringify(myTabs))
-        console.log("save",myTabs)
         renderCat(myTabs)
     })
 })
