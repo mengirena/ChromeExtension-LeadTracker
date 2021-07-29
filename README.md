@@ -37,3 +37,11 @@ if (!(key in myTabs)) myTabs[key] = []
 ### Other ways to write the selector inside `querySelector()`
 
 https://drafts.csswg.org/selectors/#overview
+
+###
+
+e.currentTarget: is the target that assigned event listener
+
+e.target: is the target being clicked
+
+e.stopPropagation()
