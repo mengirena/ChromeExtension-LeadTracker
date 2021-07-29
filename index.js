@@ -38,7 +38,7 @@ const inputEl = document.getElementById("input-el")
 const createBtn = document.getElementById("input-btn")
 const saveBtn = document.getElementById("save-btn")
 const catEl = document.getElementById("cat-el")
-let dragging, dragOverEle
+let dragging, dragOverEle, draggingInfo, dragOverInfo
 
 myTabs = JSON.parse(localStorage.getItem("myTabs")) || myTabs
 
@@ -85,25 +85,62 @@ function deleteList(e){
 function dragStart(e){
     e.stopPropagation()
     dragging = e.currentTarget
+    draggingInfo = e
 }
 
 function dragOver(e){
     e.preventDefault()
     e.stopPropagation()
     dragOverEle = e.currentTarget
+    dragOverInfo = e
 }
 
 function dragEnd(e){
-    draggingPosition = dragging.id.split("-")
-    if(!dragging.className && dragOverEle.className !== "category"){
-        dragOverPosition = dragOverEle.id.split("-")
-        temp = myTabs[draggingPosition[0]][draggingPosition[1]]
-        myTabs[draggingPosition[0]].splice(draggingPosition[1],1)
-        myTabs[dragOverPosition[0]].splice(dragOverPosition[1],0,temp)
-    }else if(!dragging.className){
-        temp = myTabs[draggingPosition[0]][draggingPosition[1]]
-        myTabs[draggingPosition[0]].splice(draggingPosition[1],1)
+    e.stopPropagation()
+    console.log(e.target)
+    const draggingPosition = dragging.id.split("-")
+    const draggingKey = draggingPosition[0]
+    const draggingValue = draggingPosition[1]
+    const dragOverPosition = dragOverEle.id.split("-")
+    const dragOverKey = dragOverPosition[0]
+    const dragOverValue = dragOverPosition[1]
+    let draggingClass = dragging.className
+    let temp
+    if(!draggingClass && dragOverEle.className !== "category"){
+        temp = myTabs[draggingKey][draggingValue]
+        console.log(draggingPosition)
+        console.log(dragOverPosition)
+        console.log(myTabs)
+
+        myTabs[draggingKey].splice(draggingValue,1)
+        console.log(myTabs[draggingKey][0])
+
+        myTabs[dragOverKey].splice(dragOverValue,0,temp)
+        console.log(myTabs)
+    }else if(!draggingClass){
+        temp = myTabs[draggingKey][draggingValue]
+        myTabs[draggingKey].splice(draggingValue,1)
         myTabs[dragOverEle.id].push(temp)
+    }else if (draggingClass == "category"){
+        if (draggingKey !== dragOverKey){
+            let rearrangeObj = {}
+            temp = myTabs[draggingKey]
+            delete myTabs[draggingKey]
+            for (let key in myTabs){
+                if (draggingInfo.clientY < dragOverInfo.clientY){
+                    rearrangeObj[key] = myTabs[key]
+                    if (key == dragOverKey){
+                        rearrangeObj[draggingKey] = temp
+                    }
+                }else{
+                    if (key == dragOverKey){
+                        rearrangeObj[draggingKey] = temp
+                    }
+                    rearrangeObj[key] = myTabs[key]
+                } 
+            }
+            myTabs = rearrangeObj
+        }
     }
     localStorage.setItem("myTabs",JSON.stringify(myTabs))
     renderCat(myTabs)
@@ -119,7 +156,7 @@ function addSmurf(){
     deleteUrl.forEach(list => list.addEventListener("dblclick",deleteList,true))
     draggableCat.forEach(cat => cat.addEventListener("dragover",dragOver))
     draggableCat.forEach(cat => cat.addEventListener("dragstart",dragStart))
-    draggableCat.forEach(cat => cat.addEventListener("dragsend",dragEnd))
+    draggableCat.forEach(cat => cat.addEventListener("dragend",dragEnd))
     draggableList.forEach(list => list.addEventListener("dragover",dragOver))
     draggableList.forEach(list => list.addEventListener("dragstart",dragStart))
     draggableList.forEach(list => list.addEventListener("dragend",dragEnd))
