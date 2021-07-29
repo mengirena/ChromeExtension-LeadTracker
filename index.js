@@ -38,7 +38,8 @@ const inputEl = document.getElementById("input-el")
 const createBtn = document.getElementById("input-btn")
 const saveBtn = document.getElementById("save-btn")
 const catEl = document.getElementById("cat-el")
-let deleteBtn, deleteUrl, draggableCat, dragging, dragOverEle
+let dragging, dragOverEle
+
 myTabs = JSON.parse(localStorage.getItem("myTabs")) || myTabs
 
 renderCat(myTabs)
@@ -81,51 +82,38 @@ function deleteList(e){
     renderCat(myTabs)
 }
 
-/*
-drag start is div or li
-*/ 
-
 function dragStart(e){
     e.stopPropagation()
-    console.log("dragStartList",e.currentTarget.className)
     dragging = e.currentTarget
 }
 
 function dragOver(e){
-    // const isLink = e.dataTransfer.types.includes("text/uri-list");
-    // if (isLink) {
-    //     console.log("link")
-    //     //e.preventDefault();
-    // }
     e.preventDefault()
     e.stopPropagation()
-    console.log("dragOver",e.currentTarget) //shows dragover element
     dragOverEle = e.currentTarget
 }
 
 function dragEnd(e){
+    draggingPosition = dragging.id.split("-")
     if(!dragging.className && dragOverEle.className !== "category"){
-        console.log("dragEnd")
-        draggingPosition = dragging.id.split("-")
         dragOverPosition = dragOverEle.id.split("-")
         temp = myTabs[draggingPosition[0]][draggingPosition[1]]
-        console.log("init", myTabs)
         myTabs[draggingPosition[0]].splice(draggingPosition[1],1)
-        console.log("remove dragging", myTabs)
         myTabs[dragOverPosition[0]].splice(dragOverPosition[1],0,temp)
-        console.log("dragover", myTabs)
     }else if(!dragging.className){
-        
+        temp = myTabs[draggingPosition[0]][draggingPosition[1]]
+        myTabs[draggingPosition[0]].splice(draggingPosition[1],1)
+        myTabs[dragOverEle.id].push(temp)
     }
     localStorage.setItem("myTabs",JSON.stringify(myTabs))
     renderCat(myTabs)
 }
 
 function addSmurf(){
-    deleteBlock = document.querySelectorAll('.delete-btn')
-    deleteUrl = document.querySelectorAll('li')
-    draggableCat = document.querySelectorAll('.category[draggable=true]')
-    draggableList = document.querySelectorAll("li[draggable=true]")
+    let deleteBlock = document.querySelectorAll('.delete-btn')
+    let deleteUrl = document.querySelectorAll('li')
+    let draggableCat = document.querySelectorAll('.category[draggable=true]')
+    let draggableList = document.querySelectorAll("li[draggable=true]")
 
     deleteBlock.forEach(block => block.addEventListener("click",deleteCat))
     deleteUrl.forEach(list => list.addEventListener("dblclick",deleteList,true))
