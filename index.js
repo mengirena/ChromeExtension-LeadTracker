@@ -15,37 +15,36 @@ Render Category blocks
 Render URL lists
 
 
-
 */ 
 
 let myTabs = {
-    // Search:[{
-    //     url:"www.google.com",
-    //     saved:new Date()
-    // },{
-    //     url:"www.A.com",
-    //     saved:new Date()
-    // }],
-    // CSS:[{
-    //     url:"www.B.com",
-    //     saved:new Date()
-    // },{
-    //     url:"www.C.com",
-    //     saved:new Date()
-    // }]
+    Search:[{
+        url:"www.google.com",
+        saved:new Date()
+    },{
+        url:"www.A.com",
+        saved:new Date()
+    }],
+    CSS:[{
+        url:"www.B.com",
+        saved:new Date()
+    },{
+        url:"www.C.com",
+        saved:new Date()
+    }]
 }
 
 const inputEl = document.getElementById("input-el")
 const createBtn = document.getElementById("input-btn")
 const saveBtn = document.getElementById("save-btn")
 const catEl = document.getElementById("cat-el")
-let deleteBtn
+let deleteBtn, deleteUrl, draggableCat
 myTabs = JSON.parse(localStorage.getItem("myTabs")) || myTabs
 
 renderCat(myTabs)
 
 createBtn.addEventListener("click", function() {
-    if (inputEl.value != "") myTabs[inputEl.value] = []
+    if (inputEl.value != "") myTabs[inputEl.value.toUpperCase()] = []
     localStorage.setItem("myTabs",JSON.stringify(myTabs))
     renderCat(myTabs)
 })
@@ -80,14 +79,35 @@ function deleteList(e){
     myTabs[key[0]].splice(key[1],1)
     localStorage.setItem("myTabs",JSON.stringify(myTabs))
     renderCat(myTabs)
-
 }
 
-function addDeleteSmurf(){
+/*
+drag start is div or li
+*/ 
+
+function dragStart(e){
+    e.stopPropagation()
+    console.log("dragStartList",e.currentTarget)
+}
+
+function dragOver(e){
+    e.preventdefault()
+    e.stopPropagation()
+    console.log("dragOver",e.currentTarget) //shows dragover element
+}
+
+function addSmurf(){
     deleteBlock = document.querySelectorAll('.delete-btn')
     deleteUrl = document.querySelectorAll('li')
+    draggableCat = document.querySelectorAll('.category[draggable=true]')
+    draggableList = document.querySelectorAll("li[draggable=true]")
+
     deleteBlock.forEach(block => block.addEventListener("click",deleteCat))
     deleteUrl.forEach(list => list.addEventListener("dblclick",deleteList,true))
+    draggableCat.forEach(cat => cat.addEventListener("dragover",dragOver))
+    draggableCat.forEach(cat => cat.addEventListener("dragstart",dragStart))
+    draggableList.forEach(list => list.addEventListener("dragover",dragOver))
+    draggableList.forEach(list => list.addEventListener("dragstart",dragStart))
 }
 
 function renderList(lists, key){
@@ -119,6 +139,6 @@ function renderCat(myTabs) {
         `
     }
     catEl.innerHTML = categoryItems
-    addDeleteSmurf()
+    addSmurf()
 }
 
