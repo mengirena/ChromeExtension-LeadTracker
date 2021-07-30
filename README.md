@@ -1,19 +1,26 @@
 # Chrome Extension - Lead Tracker
 
+## How it's built
+
+**Tech used:** HTML, CSS, JavaScript
 
 ## Lesson Learnt
 
 ### Human readable date string from Date object
-date.getFullYear(),
+
+- Get the individual year, date and time first
+   ```js
+   date.getFullYear(),
    date.getMonth()+1,
    date.getDate(),
    date.getHours(),
    date.getMinutes(),
    date.getSeconds(),
+   ```
 
-### Find parent node
-e.target.parentNode.remove()
+### How to get parent node and remove it from DOM
 
+`e.target.parentNode.remove()`
 
 ### Compare `.innerHTML`, `.innerText`, and `.textContent`
 
@@ -32,16 +39,20 @@ or
 delete object.key
 ```
 
-if (!(key in myTabs)) myTabs[key] = []
+### To check if a key exists in an object
 
-### Other ways to write the selector inside `querySelector()`
+`if (!(key in myTabs)) myTabs[key] = []`
+
+### Differernt ways to specify the selector inside `querySelector()`
 
 https://drafts.csswg.org/selectors/#overview
 
-###
+### Difference between event.currentTarget and event.target
 
-e.currentTarget: is the target that assigned event listener
+- e.currentTarget: is the target that assigned event listener
 
-e.target: is the target being clicked
+- e.target: is the target being clicked
 
-e.stopPropagation()
+### How to stop event bubbling
+
+- e.stopPropagation()
