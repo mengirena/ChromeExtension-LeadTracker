@@ -13,25 +13,23 @@ If the localStorage has data, render it
 Render Category blocks
         
 Render URL lists
-
-
 */ 
 
 let myTabs = {
-    Search:[{
-        url:"www.google.com",
-        saved:new Date()
-    },{
-        url:"www.A.com",
-        saved:new Date()
-    }],
-    CSS:[{
-        url:"www.B.com",
-        saved:new Date()
-    },{
-        url:"www.C.com",
-        saved:new Date()
-    }]
+    // Search:[{
+    //     url:"https://developer.mozilla.org/en-US/docs/Web/API/Element/classList",
+    //     saved:new Date()
+    // },{
+    //     url:"https://www.glassdoor.com/employers/blog/interview-questions-facebook-asks/",
+    //     saved:new Date()
+    // }],
+    // CSS:[{
+    //     url:"https://www.google.com",
+    //     saved:new Date()
+    // },{
+    //     url:"https://news.google.com/topstories?hl=en-US&gl=US&ceid=US:en",
+    //     saved:new Date()
+    // }]
 }
 
 const inputEl = document.getElementById("input-el")
@@ -97,7 +95,6 @@ function dragOver(e){
 
 function dragEnd(e){
     e.stopPropagation()
-    console.log(e.target)
     const draggingPosition = dragging.id.split("-")
     const draggingKey = draggingPosition[0]
     const draggingValue = draggingPosition[1]
@@ -108,15 +105,8 @@ function dragEnd(e){
     let temp
     if(!draggingClass && dragOverEle.className !== "category"){
         temp = myTabs[draggingKey][draggingValue]
-        console.log(draggingPosition)
-        console.log(dragOverPosition)
-        console.log(myTabs)
-
         myTabs[draggingKey].splice(draggingValue,1)
-        console.log(myTabs[draggingKey][0])
-
         myTabs[dragOverKey].splice(dragOverValue,0,temp)
-        console.log(myTabs)
     }else if(!draggingClass){
         temp = myTabs[draggingKey][draggingValue]
         myTabs[draggingKey].splice(draggingValue,1)
@@ -129,13 +119,9 @@ function dragEnd(e){
             for (let key in myTabs){
                 if (draggingInfo.clientY < dragOverInfo.clientY){
                     rearrangeObj[key] = myTabs[key]
-                    if (key == dragOverKey){
-                        rearrangeObj[draggingKey] = temp
-                    }
+                    if (key == dragOverKey) rearrangeObj[draggingKey] = temp
                 }else{
-                    if (key == dragOverKey){
-                        rearrangeObj[draggingKey] = temp
-                    }
+                    if (key == dragOverKey) rearrangeObj[draggingKey] = temp
                     rearrangeObj[key] = myTabs[key]
                 } 
             }
@@ -163,8 +149,18 @@ function addSmurf(){
 }
 
 function renderList(lists, key){
+    // let title
     let listItems = "<ul>"
     for (let i = 0; i < lists.length; i++) {
+        // fetch(`https://cors-anywhere.herokuapp.com/${lists[i].url}`)
+        // .then((response) => {
+        //     console.log(response)
+        //     response.text()})
+        // .then((html) => {
+        //     const doc = new DOMParser().parseFromString(html, "text/html");
+        //     title = doc.querySelectorAll('title')[0].innerText;
+        // })
+
         listItems += `
             <li id="${key}-${i}" draggable="true">
                 <a target='_blank' href='${lists[i].url}'>
@@ -172,6 +168,8 @@ function renderList(lists, key){
                 </a>
                 <span>${new Date(lists[i].saved).getMonth()+1}/${new Date(lists[i].saved).getDate()}</span>
             </li>
+            
+            
         `
     }
     return listItems + '</ul>'

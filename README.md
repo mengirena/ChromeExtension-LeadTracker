@@ -1,4 +1,6 @@
-# Chrome Extension - Lead Tracker
+# Chrome Extension - Save Tabs
+
+This chrome extension can save tabs under different customed category so that users can find the tabs easily and in the meanwhile to maintain the browser efficiency.
 
 ## How it's built
 
